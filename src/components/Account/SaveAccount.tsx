@@ -27,14 +27,21 @@ const SaveAccount = () => {
   });
 
   const fetchAccount = async () => {
-    const existingAccount = await fetch('http://localhost:4000/api/accounts', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const accountData = await existingAccount.json();
-    setAccount(accountData.data);
+    try {
+      const existingAccount = await fetch(
+        'http://localhost:4000/api/accounts',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const accountData = await existingAccount.json();
+      setAccount(accountData.data);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {
@@ -55,15 +62,19 @@ const SaveAccount = () => {
   }, [account, setValue]);
 
   const saveAccount = async (data: Account) => {
-    console.log({ data });
-    // await fetch(`${data.serverPath}:${data.serverPort}/api/accounts`, {
-    await fetch('http://localhost:4000/api/accounts', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+    try {
+      console.log({ data });
+      // await fetch(`${data.serverPath}:${data.serverPort}/api/accounts`, {
+      await fetch('http://localhost:4000/api/accounts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const onSubmitHandler = (data: any) => {
