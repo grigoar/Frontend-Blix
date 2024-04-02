@@ -28,11 +28,7 @@ const FormInput = ({
       return <li key={index}>{error}</li>;
     }) || [];
 
-  const inputInvalid = errorMessages.length > 0 ? 'border-red-500' : '';
-
-  if (errorMessages.length > 0) {
-    console.log('errorMessages', errorMessages);
-  }
+  const inputInvalid = errorMessages.length > 0 ? '!border-red-500' : '';
 
   return (
     <div className={`${formInputClassName} flex mb-2 items-center`}>

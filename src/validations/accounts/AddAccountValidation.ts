@@ -5,7 +5,7 @@ export const AddAccountValidationSchema = yup.object().shape({
   accountType: yup.string().required(),
   username: yup.string().email().required(),
   password: yup.string().min(8).max(32).required(),
-  serverAddress: yup.string().url(),
+  serverAddress: yup.string(),
   serverPath: yup.string().matches(/^[a-zA-Z0-9/]*$/),
 
   serverPort: yup.lazy((value) =>

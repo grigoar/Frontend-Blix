@@ -1,31 +1,63 @@
 'use client';
 import { AddAccountValidationSchema } from '@/validations/accounts/AddAccountValidation';
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect } from 'react';
+import { set, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Card from '../Common/Card/Card';
 import FormInput from '../Common/Form/FormInput';
 import { AccountType } from '@/types/AccountType';
 import { Controller } from 'react-hook-form';
+import { Account, Account as SaveAccount } from '@/types/Account';
 
-const Account = () => {
+const SaveAccount = () => {
   const [accountType, setAccountType] = React.useState<AccountType>(
     AccountType.ADVANCED
   );
+  const [account, setAccount] = React.useState<SaveAccount | null>();
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
     control,
   } = useForm({
     resolver: yupResolver(AddAccountValidationSchema),
     mode: 'onTouched',
   });
 
-  const saveAccount = async (data: any) => {
+  const fetchAccount = async () => {
+    const existingAccount = await fetch('http://localhost:4000/api/accounts', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const accountData = await existingAccount.json();
+    setAccount(accountData.data);
+  };
+
+  useEffect(() => {
+    fetchAccount();
+  }, []);
+
+  useEffect(() => {
+    if (account) {
+      setValue('accountType', account.accountType);
+      setValue('username', account.username);
+      setValue('password', account.password);
+      setValue('serverAddress', account.serverAddress);
+      setValue('serverPath', account.serverPath);
+      setValue('serverPort', account.serverPort);
+      setValue('serverProtocol', account.serverProtocol);
+      setAccountType(account.accountType);
+    }
+  }, [account, setValue]);
+
+  const saveAccount = async (data: Account) => {
     console.log({ data });
-    await fetch('http://localhost:3000/api/accounts', {
+    // await fetch(`${data.serverPath}:${data.serverPort}/api/accounts`, {
+    await fetch('http://localhost:4000/api/accounts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -37,9 +69,6 @@ const Account = () => {
   const onSubmitHandler = (data: any) => {
     console.log({ data });
     saveAccount(data);
-
-    // TODO: enable reset after form submission
-    // reset();
   };
 
   const changeAccountType = (e: any) => {
@@ -165,5 +194,5 @@ const Account = () => {
   );
 };
 
-export default Account;
+export default SaveAccount;
 
